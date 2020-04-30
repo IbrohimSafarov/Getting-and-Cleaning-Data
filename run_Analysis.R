@@ -1,5 +1,6 @@
 library(reshape2)
 
+# load & merge the data
 setwd("E:/R/UCI HAR Dataset")
 train_x <- read.table("E:/R/UCI HAR Dataset/train/X_train.txt")
 train_y <- read.table("E:/R/UCI HAR Dataset/train/Y_train.txt")
@@ -23,7 +24,7 @@ measurements = gsub('-std', 'Std', measurements)
 measurements <- gsub('[-()]', '', measurements)
 
 
-
+# turn activities & subjects into factors
 joint_data <- rbind(train, test)
 colnames(joint_data) <- c("subject", "activity", measurements)
 
@@ -31,9 +32,11 @@ colnames(joint_data) <- c("subject", "activity", measurements)
 joint_data$activity <- factor(joint_data$activity, levels = activity_labels[,1], labels = activity_labels[,2])
 joint_data$subject <- as.factor(joint_data$subject)
 
+# order data
 melt_data <- melt(joint_data, id = c("subject", "activity"))
 mean_data <- dcast(melt_data, subject + activity ~ variable, mean)
 
+# save data
 write.table(mean_data, "tidy_data.txt", row.names = FALSE, quote = FALSE)
 
 
